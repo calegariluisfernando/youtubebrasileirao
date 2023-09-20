@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'notifiers/theme_notifier.dart';
 import 'notifiers/time_notifier.dart';
 import 'screens/home_screen.dart';
 
@@ -8,6 +9,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => ThemeNotifier()),
         ChangeNotifierProvider(create: (context) => TimeNotifier()),
       ],
       child: MyApp(),
@@ -21,26 +23,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final ThemeNotifier themeNotifier = Provider.of<ThemeNotifier>(context);
     return MaterialApp(
       title: 'Brasileirão',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        primarySwatch: Colors.grey,
-        hintColor: Colors.white,
-        dividerColor: Colors.black45,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.deepPurpleAccent[100],
-          ),
-        ),
-      ),
-      themeMode: ThemeMode.system,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: themeNotifier.isDark ? ThemeMode.dark : ThemeMode.light,
       home: HomeScreen(),
     );
   }

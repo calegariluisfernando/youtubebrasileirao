@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:youtubebrasileirao/services/maria_service.dart';
 
 import '../model/time_model.dart';
 import '../my_default_settings.dart';
@@ -9,11 +10,12 @@ class TimeItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MariaService mariaService = MariaService.instance;
     return Container(
       alignment: Alignment.center,
       child: ListTile(
         leading: Image.network(
-          'http://localhost:8181/api/times/proxy-image?link=${time.urlEscudo}',
+          '${mariaService.dio.options.baseUrl}/times/proxy-image?link=${time.urlEscudo}',
           width: 50,
           height: 50,
           fit: BoxFit.cover,

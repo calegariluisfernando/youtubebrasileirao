@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:youtubebrasileirao/widgets/time_item_widget.dart';
 
 import '../model/time_model.dart';
-import '../my_default_settings.dart';
+import '../notifiers/theme_notifier.dart';
 import '../notifiers/time_notifier.dart';
 import '../services/maria_service.dart';
+import '../widgets/time_item_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
@@ -19,7 +19,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    carregarTema();
     carregarDados();
+  }
+
+  carregarTema() async {
+    ThemeNotifier tn = Provider.of<ThemeNotifier>(context, listen: false);
+    await tn.loadThemeMode();
   }
 
   carregarDados() async {
@@ -47,10 +53,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeNotifier themeNotifier = Provider.of<ThemeNotifier>(context);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Brasileirão'),
+          actions: [
+            PopupMenuButton(
+              icon: Icon(Icons.more_vert),
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  child: ListTile(
+                      leading: themeNotifier.isDark
+                          ? Icon(Icons.brightness_7)
+                          : Icon(Icons.brightness_2),
+                      title: themeNotifier.isDark ? Text('Light') : Text('Dark'),
+                      onTap: () => themeNotifier.changeTheme(),
+                    ),
+                ),
+              ],
+            ),
+          ],
         ),
         body: Consumer<TimeNotifier>(
           builder: (context, timeNotifier, child) => ListView.separated(

@@ -1,0 +1,48 @@
+version: "3"
+services:
+  application:
+    container_name: youtubebrasileirao-app
+    build:
+      args:
+        user: ${SO_DOCKER_USER}
+        uid: 1000
+      context: ./docker-compose/application
+    working_dir: /var/www
+    volumes:
+      - ./application:/var/www
+    networks:
+      - youtubebrasileirao-network
+
+  mysql:
+    container_name: youtubebrasileirao-db
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: youtubebrasileirao
+    volumes:
+      - mysqlvolume:/var/lib/mysql
+    networks:
+      - youtubebrasileirao-network
+    ports:
+      - "3306:3306"
+
+  nginx:
+    container_name: youtubebrasileirao-nginx
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "8181:80"
+    volumes:
+      - ./application:/var/www
+      - ./docker-compose/nginx/conf/:/etc/nginx/conf.d/
+    networks:
+      - youtubebrasileirao-network
+
+volumes:
+  mysqlvolume:
+
+networks:
+  youtubebrasileirao-network:
+    driver: bridge

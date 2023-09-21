@@ -9,7 +9,7 @@ import '../services/maria_service.dart';
 import '../widgets/time_item_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -46,6 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
       );
       count++;
     } while (count < dados.length);
+
+    dadosTimes.sort((a, b) => b.pontos.compareTo(a.pontos));
 
     TimeNotifier tn = Provider.of<TimeNotifier>(context, listen: false);
     tn.timeList = dadosTimes;
@@ -85,14 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  errorImage({required double size, required Color color}) {
-    return Icon(
-      Icons.error_outline,
-      size: size,
-      color: color,
     );
   }
 }
